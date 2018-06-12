@@ -1,0 +1,100 @@
+:host {
+    display: block;
+    contain: content;
+}
+
+* {
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: 0.95em;
+}
+
+.card {
+    max-width: 90%;
+    margin: 6px auto;
+    padding: 6px;
+    background-color: white;
+    box-shadow: 1px 1px 1px gray;
+    border-radius: 4px;
+}
+
+.card-title {
+    color: black;
+    font-weight: bold;
+    height: 1.5em;
+    line-height: 1.5em;
+    border-radius: 4px 4px 0px 0px;
+    padding: 2px 4px 2px 4px;
+}
+
+.card-content {
+    color: black;
+    border-radius: 0px 0px 4px 4px;
+    padding: 4px 4px;
+    transition: max-height 0.6s ease-in-out;
+    overflow: hidden;
+    max-height: 1em;
+}
+
+.expanded {
+    max-height: 100em;
+}
+
+.btn-edit, .btn-submit, .btn-cancel {
+    width: 6em;
+    height: 1.5em;
+    line-height: 1.5em;
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+    box-shadow: 1px 1px 2px gray;
+    cursor: pointer;
+    margin: 0 auto;
+}
+
+.btn-edit:hover, .btn-submit:hover, .btn-cancel:hover {
+    box-shadow: none;
+}
+
+.btn-edit, .btn-submit {
+    background-color: royalblue;
+}
+
+.btn-edit:hover, .btn-submit:hover {
+    background-color: lightblue;
+}
+
+.btn-edit:active, .btn-submit:active {
+    background-color: darkblue;
+}
+
+.btn-cancel {
+    background-color: gray;
+}
+
+.btn-cancel:hover {
+    background-color: lightgray;
+}
+
+.btn-cancel:active {
+    background-color: slategray;
+}
+
+.btn-submit, .btn-cancel {
+    display: none;
+}
+
+/* Tablet layout */
+@media (min-width: 768px) {
+
+}
+
+/* Laptops: small (e.g. up to 13 inch) */
+@media (min-width: 992px) {
+
+}
+
+/* Laptops and Desktops */
+@media (min-width: 1200px) {
+
+}
+

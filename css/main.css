@@ -1,0 +1,75 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Default layout: Phones */
+header {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    height: 2.5em;
+    width: 100%;
+    line-height: 2em;
+    text-align: center;
+    color: white;
+    background-color: black;
+    z-index: 1;
+    box-shadow: 2px 2px 4px black;
+}
+
+.container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    overflow: auto;
+}
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background-image: url('https://picsum.photos/1920/1080/?random');
+    background-size: cover;
+    background-position: center;
+    filter: blur(5px);
+    z-index: -1;
+}
+main {
+    margin-top: 2.5em;
+    padding: 1em;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    grid-column-gap: 2em;
+}
+
+/* Tablet layout */
+@media only screen and (min-width: 768px) {
+    main {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Laptops: small (e.g. up to 13 inch) */
+@media only screen and (min-width: 992px) {
+    main {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Laptops and Desktops */
+@media only screen and (min-width: 1200px) {
+    main {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

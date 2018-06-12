@@ -1,0 +1,44 @@
+.btn-group {
+    display: none;
+    text-align: center;
+}
+
+.proto-card-input {
+    border-radius: 6px;
+    width: 93%;
+    margin: 2px auto;
+    resize: vertical;
+    height: 3em;
+    display: none;
+}
+
+.proto-card-btn-submit, .proto-card-btn-cancel {
+    display: inline-block;
+    width: 4em;
+    height: 1.5em;
+    line-height: 1.5em;
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+    box-shadow: 1px 1px 2px gray;
+    cursor: pointer;
+    margin: 6px 1em;
+}
+
+.proto-card-btn-submit {
+    background-color: green;
+}
+
+.proto-card-btn-cancel {
+    background-color: gray;
+}
+
+.proto-card-placeholder {
+    display: block;
+    cursor: pointer;
+    font-size: 0.75em;
+}
+
+.proto-card-placeholder:hover {
+    color: lightgray;
+}

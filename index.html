@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="./js/webcomponentspolyfill.js"></script>
+    <!-- <script src="./js/helpers.js"></script> -->
+    <script src="./Components/Column/column.js"></script>
+    <script src="./Components/Card/card.js"></script>
+    <title>Trello-like</title>
+</head>
+<body>
+    <!-- Templates for web components -->
+    <template id="column-template">
+        <link rel="stylesheet" href="./Components/Column/column.css">
+        <div class="column">
+            <div class="column-title">
+                <slot name="column-title">Column placeholder title</slot>
+            </div>
+            <div class="column-card-list">
+            </div>
+        </div>
+    </template>
+
+    <template id="proto-column-template">
+        <link rel="stylesheet" href="./Components/Column/protocolumn.css">
+        <div class="proto-column">
+            <form class="proto-column-form" onsubmit="return false">
+                <span class="proto-column-placeholder">Add a column...</span>
+                <input type="text" name="column-title" placeholder="" autocomplete="off" class="proto-column-input">
+                <div class="btn-group">
+                    <div class="proto-column-btn-submit">Create</div>
+                    <div class="proto-column-btn-cancel">Cancel</div>
+                </div>
+            </form>
+        </div>
+    </template>
+
+    <template id="card-template">
+        <link rel="stylesheet" href="./Components/Card/card.css">
+        <div class="card">
+            <div class="card-title" contenteditable="false">
+                <slot name="card-title">Card placeholder title</slot>
+            </div>
+            <div class="card-content" contenteditable="false">
+                <slot name="card-description">Card placeholder description</slot>
+            </div>
+            <div class="btn-edit">Edit</div>
+            <div class="btn-submit">Submit</div>
+            <div class="btn-cancel">Cancel</div>
+        </div>
+    </template>
+
+    <template id="proto-card-template">
+        <link rel="stylesheet" href="./Components/Card/protocard.css">
+        <div class="proto-card">
+            <form class="proto-card-form" onsubmit="return false">
+                <span class="proto-card-placeholder">Add a card...</span>
+                <textarea type="text" name="card-description" placeholder="" autocomplete="off" class="proto-card-input"></textarea>
+                <div class="btn-group">
+                    <div class="proto-card-btn-submit">Create</div>
+                    <div class="proto-card-btn-cancel">Cancel</div>
+                </div>
+            </form>
+        </div>
+    </template>
+
+    <template id="search-template">
+        <form class="search-form" onsubmit="return false">
+            <input type="text" name="search" placeholder="Find something">
+            <div class="btn-search">Search</div>
+        </form>
+    </template>
+    <!-- Templates end here -->
+    <div class="container">
+        <div class="background"></div>
+        <header>
+            Kanban.
+        </header>
+        <main>
+            
+        </main>
+    </div>
+    <script src="./js/main.js"></script>
+</body>
+</html>
