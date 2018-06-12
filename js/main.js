@@ -57,7 +57,7 @@ function onSearch(searchString) {
 }
 
 window.onload = function() {
-    fetch('/materials/db.json')
+    fetch('./materials/db.json')
         .then(response => response.json())
         .then(data => {__data = data; init()});
     
