@@ -59,11 +59,13 @@ class Card extends HTMLElement {
         if (!this.cardTitle) {
             this.cardTitle = document.createElement('div');
             this.cardTitle.setAttribute('slot', 'card-title');
+            this.cardTitle.setAttribute('contenteditable', 'true');
             this.cardTitle.textContent = this.title;
             this.appendChild(this.cardTitle);
     
             this.cardDescription = document.createElement('div');
             this.cardDescription.setAttribute('slot', 'card-description');
+            this.cardDescription.setAttribute('contenteditable', 'true');
             this.cardDescription.textContent = this.description;
             this.appendChild(this.cardDescription);
     
@@ -71,7 +73,7 @@ class Card extends HTMLElement {
             this.btnSubmit = this.shadowRoot.querySelector('.btn-submit');
             this.btnCancel = this.shadowRoot.querySelector('.btn-cancel');
 
-            this.shadowRoot.querySelector('.card-content').addEventListener('click', this.toggleHeight);
+            // this.shadowRoot.querySelector('.card-content').addEventListener('click', this.toggleHeight);
         }
     }
 
