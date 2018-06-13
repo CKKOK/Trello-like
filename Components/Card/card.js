@@ -57,12 +57,12 @@ class Card extends HTMLElement {
     }
     connectedCallback() {
         if (!this.cardTitle) {
-            this.cardTitle = document.createElement('span');
+            this.cardTitle = document.createElement('div');
             this.cardTitle.setAttribute('slot', 'card-title');
             this.cardTitle.textContent = this.title;
             this.appendChild(this.cardTitle);
     
-            this.cardDescription = document.createElement('span');
+            this.cardDescription = document.createElement('div');
             this.cardDescription.setAttribute('slot', 'card-description');
             this.cardDescription.textContent = this.description;
             this.appendChild(this.cardDescription);
@@ -80,7 +80,7 @@ class Card extends HTMLElement {
     }
 
     attributeChangedCallback() {
-
+        console.log('attr changed');
     }
 }
 

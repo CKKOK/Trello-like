@@ -22,14 +22,26 @@ function getCardsOfColumn(n) {
     })
 }
 
+function columnUpdateFunc(state) {
+    // We expect the state object to have the signature {id, title}
+    if (!state.id || !state.title) {
+        throw new Error('Missing id or title from update');
+    } else {
+        let col = __data.columns.find(obj => obj.id === parseInt(state.id));
+        col.title = state.title;
+    };
+};
 
-
-function createProtoColumn() {
-
-}
-
-function createProtoCard() {
-
+function cardUpdateFunc(state) {
+    // We expect the state object to have the signature {id, title, description, columnId}
+    if (!state.id || !state.title || !state.description || !state.columnId) {
+        throw new Error('Missing id, title, description, or columnId from update');
+    } else {
+        let card = __data.cards.find(obj => obj.id === parseInt(state.id));
+        card.title = state.title;
+        card.description = state.description;
+        card.columnId = state.columnId;
+    };
 }
 
 function save() {

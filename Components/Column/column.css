@@ -25,21 +25,21 @@
 /* Tablet layout */
 @media (min-width: 768px) {
     .column {
-        width: 340px;
+        max-width: 340px;
     }
 }
 
 /* Laptops: small (e.g. up to 13 inch) */
 @media (min-width: 992px) {
     .column {
-        width: 315px;
+        max-width: 315px;
     }
 }
 
 /* Laptops and Desktops */
 @media (min-width: 1200px) {
     .column {
-        width: 270px;
+        max-width: 270px;
     }
 }
 

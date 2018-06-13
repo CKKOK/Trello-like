@@ -59,6 +59,10 @@
     background-color: royalblue;
 }
 
+.btn-edit {
+    display: none;
+}
+
 .btn-edit:hover, .btn-submit:hover {
     background-color: lightblue;
 }

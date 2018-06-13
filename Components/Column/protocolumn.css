@@ -1,4 +1,5 @@
 .proto-column {
+    max-width: 320px;
     font-family: Arial, Helvetica, sans-serif;
     margin: 6px auto;
     font-size: 13px;
@@ -51,4 +52,25 @@
 
 .proto-column-placeholder:hover {
     background-color: rgba(23, 133, 235, 0.671);
+}
+
+/* Tablet layout */
+@media (min-width: 768px) {
+    .proto-column {
+        max-width: 340px;
+    }
+}
+
+/* Laptops: small (e.g. up to 13 inch) */
+@media (min-width: 992px) {
+    .proto-column {
+        max-width: 315px;
+    }
+}
+
+/* Laptops and Desktops */
+@media (min-width: 1200px) {
+    .proto-column {
+        max-width: 270px;
+    }
 }

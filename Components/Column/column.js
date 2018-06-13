@@ -8,7 +8,7 @@ function setStyleAll(selector, styles) {
 };
 
 class Column extends HTMLElement {
-    constructor(id, title, store) {
+    constructor(id, title, updateFunc) {
         super();
         const template = document.getElementById('column-template').content;
         const shadowRoot = this.attachShadow({mode: 'open'});
@@ -16,7 +16,7 @@ class Column extends HTMLElement {
 
         this.setAttribute('data-id', id);
         this.title = title || 'New Column';
-        this.store = store;
+        this.updateFunc = updateFunc;
 
         this.destroy = this.destroy.bind(this);
         this.setTitle = this.setTitle.bind(this);
@@ -40,8 +40,14 @@ class Column extends HTMLElement {
         this.colTitle.setAttribute('contenteditable', 'false');
         this.colTitle.classList.toggle('edit-title');
     }
+
+    update() {
+        this.updateFunc({
+            id: this.id
+        })
+    }
     connectedCallback() {
-        this.colTitle = document.createElement('span');
+        this.colTitle = document.createElement('div');
         this.colTitle.setAttribute('slot', 'column-title');
         this.colTitle.textContent = this.title;
         this.colTitle.addEventListener('click', this.editTitle);
