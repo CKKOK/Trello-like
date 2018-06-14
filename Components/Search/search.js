@@ -16,7 +16,7 @@ class Search extends HTMLElement {
         const searchBar = this.shadowRoot.querySelector('.search-input');
         const searchBtn = this.shadowRoot.querySelector('.btn-search');
         this.input = searchBar;
-        searchBar.addEventListener('change', this.changeHandler);
+        searchBar.addEventListener('input', this.changeHandler);
         form.addEventListener('submit', this.submitHandler);
         searchBtn.addEventListener('click', this.submitHandler);
     }
