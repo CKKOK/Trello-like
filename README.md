@@ -1,10 +1,12 @@
 # A Trello-like Application
 
+A quick view of this application can be seen at [http://ckkok.github.io/Trello-like](http://ckkok.github.io/Trello-like).
+
 ### Installation
 - Clone/download this repository. Ensure that the `Components` folder is installed in the root directory.
 	- If the components are to be used elsewhere, please import the templates from `index.html` along with them as dependencies.
 - Install the `json-server` package globally via the command `npm i -g json-server`. You may need sudo rights on Mac/Linux depending on your setup.
-- Start the server with the command `json-server ./materials/db.json --static ./` and open `http://localhost:3000` in your browser.
+- Start the server with the command `json-server ./materials/db.json --static ./` and open http://localhost:3000 in your browser.
 
 
 ### Features
