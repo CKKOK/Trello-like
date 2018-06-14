@@ -22,7 +22,7 @@ A quick view of this application can be seen at [http://ckkok.github.io/Trello-l
 - Drag and drop a card from one column to another via its drag handle
 - Export and download your data for offline storage
 - Documentation according to JSDocs standards
-- Runs best on Chrome/Safari/Edge via polyfills. 
+- Runs best on Chrome. Safari and Edge are supported via polyfills. Other browsers tested on: iOS Safari, Android Chrome, and Samsung Internet.
 
 ## Known issues
 - Touch support is not complete although the view responds to different window sizes. In particular, dragging a card via touch will not work well, if at all.
