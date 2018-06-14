@@ -1,61 +1,45 @@
-function setStyle(element, styles) {
-    Object.assign(element.style, styles);
-};
-
-function setStyleAll(selector, styles) {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach(el => Object.assign(el.style, styles));
-};
+let columnIds = 0;
 
 class Column extends HTMLElement {
-    constructor(id, title, updateFunc) {
+    constructor(id, title, updateFunc, cardUpdateFunc) {
         super();
+        columnIds++;
         const template = document.getElementById('column-template').content;
         const shadowRoot = this.attachShadow({mode: 'open'});
         shadowRoot.appendChild(template.cloneNode(true));
 
-        this.setAttribute('data-id', id);
+        this.id = id;
         this.title = title || 'New Column';
         this.updateFunc = updateFunc;
+        this.cardUpdateFunc = cardUpdateFunc;
 
         this.destroy = this.destroy.bind(this);
-        this.setTitle = this.setTitle.bind(this);
-        this.editTitle = this.editTitle.bind(this);
-        this.done = this.done.bind(this);
+        this.update = this.update.bind(this);
     }
 
-    setTitle(title) {
-        this.colTitle.textContent = title;
-        let columnStoreData = this.store.columns.find(obj => obj.id === parseInt(this.dataset.id));
-        columnStoreData.title = title;
-    }
-
-    editTitle(){
-        this.colTitle.setAttribute('contenteditable', 'true');
-        this.colTitle.classList.toggle('edit-title');
-        this.colTitle.focus();
-    }
-
-    done() {
-        this.colTitle.setAttribute('contenteditable', 'false');
-        this.colTitle.classList.toggle('edit-title');
+    getAllCards() {
+        let result = this.shadowRoot.querySelectorAll('card-element');
+        return result;
     }
 
     update() {
         this.updateFunc({
-            id: this.id
+            id: this.id,
+            title: this.colTitle.textContent
         })
     }
     connectedCallback() {
         this.colTitle = document.createElement('div');
         this.colTitle.setAttribute('slot', 'column-title');
         this.colTitle.textContent = this.title;
-        this.colTitle.addEventListener('click', this.editTitle);
-        this.colTitle.addEventListener('input', () => {console.log(this.textContent)});
+        this.colTitle.addEventListener('input', this.update);
         this.appendChild(this.colTitle);
 
         const columnCardList = this.shadowRoot.querySelector('.column-card-list');
-        columnCardList.appendChild(new ProtoCard(this));
+        columnCardList.appendChild(new ProtoCard(this, this.cardUpdateFunc));
+
+        this.btnDelete = this.shadowRoot.querySelector('.column-delete-icon');
+        this.btnDelete.addEventListener('click', this.destroy);
     }
 
     disconnectedCallback() {
@@ -67,17 +51,23 @@ class Column extends HTMLElement {
     }
 
     add(card) {
+        // Append the new card before the new card form
+        // Update the new card's columnId field
         const columnCardList = this.shadowRoot.querySelector('.column-card-list');
         columnCardList.insertBefore(card, columnCardList.children[columnCardList.children.length - 1]);
     }
 
     destroy() {
+        // Call the destroy method on each card to remove all event listeners to safeguard against memory leaks
+        // Then remove all event listeners on the column
+        let cards = this.getAllCards();
+        cards.forEach(card => card.destroy());
         this.parentNode.removeChild(this);
     }
 }
 
 class ProtoColumn extends HTMLElement {
-    constructor() {
+    constructor(updateFunc) {
         super();
         const template = document.getElementById('proto-column-template').content;
         const shadowRoot = this.attachShadow({mode: 'open'});
@@ -86,6 +76,7 @@ class ProtoColumn extends HTMLElement {
         this.edit = this.edit.bind(this);
         this.cancel = this.cancel.bind(this);
         this.makeNewColumn = this.makeNewColumn.bind(this);
+        this.updateFunc = updateFunc;
     }
 
     connectedCallback() {
@@ -94,9 +85,8 @@ class ProtoColumn extends HTMLElement {
         this.btnSubmit = shadowRoot.querySelector('.proto-column-btn-submit');
         this.btnCancel = shadowRoot.querySelector('.proto-column-btn-cancel');
         this.placeholder = shadowRoot.querySelector('.proto-column-placeholder');
-
-        
-
+        this.form = shadowRoot.querySelector('.proto-column-form');
+        this.form.addEventListener('submit', this.makeNewColumn);
         this.placeholder.addEventListener('click', this.edit);
         this.btnSubmit.addEventListener('click', this.makeNewColumn);
         this.btnCancel.addEventListener('click', this.cancel);
@@ -118,7 +108,7 @@ class ProtoColumn extends HTMLElement {
     makeNewColumn(e) {
         e.preventDefault();
         const title = this.input.value;
-        MAIN.insertBefore(new Column(__data.columns.length, title, __data), this);
+        MAIN.insertBefore(new Column(__data.columns.length, title, this.updateFunc), this);
         this.cancel();
     }
 }

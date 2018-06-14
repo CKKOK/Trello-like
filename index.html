@@ -9,15 +9,21 @@
     <!-- <script src="./js/helpers.js"></script> -->
     <script src="./Components/Column/column.js"></script>
     <script src="./Components/Card/card.js"></script>
+    <script src="./Components/Search/search.js"></script>
     <title>Trello-like</title>
 </head>
 <body>
     <!-- Templates for web components -->
     <template id="column-template">
         <link rel="stylesheet" href="./Components/Column/column.css">
-        <div class="column">
-            <div class="column-title">
-                <slot name="column-title">Column placeholder title</slot>
+        <div class="column droptarget">
+            <div class="column-header">
+                <div class="column-title" contenteditable="true">
+                    <slot name="column-title">Column placeholder title</slot>
+                </div>
+                <div class="column-delete-icon">
+                    &#x2715;
+                </div>
             </div>
             <div class="column-card-list">
             </div>
@@ -27,7 +33,7 @@
     <template id="proto-column-template">
         <link rel="stylesheet" href="./Components/Column/protocolumn.css">
         <div class="proto-column">
-            <form class="proto-column-form" onsubmit="return false">
+            <form class="proto-column-form">
                 <span class="proto-column-placeholder">Add a column...</span>
                 <input type="text" name="column-title" placeholder="" autocomplete="off" class="proto-column-input">
                 <div class="btn-group">
@@ -40,11 +46,25 @@
 
     <template id="card-template">
         <link rel="stylesheet" href="./Components/Card/card.css">
-        <div class="card">
-            <div class="card-title" contenteditable="false">
-                <slot name="card-title">Card placeholder title</slot>
+        <div class="card dropzone" draggable="false">
+            <div class="card-header">
+                <div class="card-title" contenteditable="true">
+                    <slot name="card-title">Card placeholder title</slot>
+                </div>
+                <div class="card-control-group">
+                    <div class="card-drag-icon">
+                        &#10009;
+                    </div>
+                    <div class="card-delete-icon">
+                        &#x2715;
+                    </div>
+                    <div class="card-expand-icon">
+                        &#x21E9;
+                    </div>
+                </div>
             </div>
-            <div class="card-content" contenteditable="false">
+            
+            <div class="card-content" contenteditable="true">
                 <slot name="card-description">Card placeholder description</slot>
             </div>
             <div class="btn-edit">Edit</div>
@@ -68,9 +88,10 @@
     </template>
 
     <template id="search-template">
-        <form class="search-form" onsubmit="return false">
-            <input type="text" name="search" placeholder="Find something">
-            <div class="btn-search">Search</div>
+        <link rel="stylesheet" href="./Components/Search/search.css">
+        <form class="search-form">
+            <input type="text" name="search" class="search-input" placeholder="Find something">
+            <div class="btn-search">&#x1F50D;</div>
         </form>
     </template>
     <!-- Templates end here -->

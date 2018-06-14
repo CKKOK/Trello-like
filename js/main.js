@@ -1,29 +1,37 @@
-const COLUMN_CLASS = 'column';
-const CARD_CLASS = 'card';
 
+
+/**
+ * @constant {DOMElement} MAIN - main section of the page
+ * @constant {DOMElement} HEADER - header section, where the title and the search bar lives
+ * @constant {Object} __data - single data store containing the state of the columns and cards 
+ */
 const MAIN = document.querySelector('main');
+const HEADER = document.querySelector('header');
+const __data = {};
+// const __COLUMNS = {};
+// const __CARDS = {};
 
-let __data = null;
-const __COLUMNS = {};
-const __CARDS = {};
-
-// Modify card
-// Delete card
-// Add column
-// Modify column
-// Delete column
+// Modify card ::DONE
+// Delete card::DONE
+// Add column::DONE
+// Modify column::DONE
+// Delete column::DONE
 // Search for cards
 // Drag and drop card from one column to another
-// Click on a card to expand it
+// Click on a card to expand it::DONE
 
-function getCardsOfColumn(n) {
-    return __data["cards"].filter(card => {
-        return parseInt(card['columnId']) === n;
-    })
-}
+HEADER.appendChild(new Search(onSearch));
 
-function columnUpdateFunc(state) {
-    // We expect the state object to have the signature {id, title}
+
+/**
+ * @function columnUpdateFunc - Updates the state of a column in our data store
+ * @param {Object} state - state of the column
+ * @param {string} state.id - column id
+ * @param {string} state.title - column title
+ * @param {boolean} create - whether a column is being initialized
+ * @param {boolean} del - whether a column is being deleted
+ */
+function columnUpdateFunc(state, create = false, del = false) {
     if (!state.id || !state.title) {
         throw new Error('Missing id or title from update');
     } else {
@@ -32,8 +40,17 @@ function columnUpdateFunc(state) {
     };
 };
 
-function cardUpdateFunc(state) {
-    // We expect the state object to have the signature {id, title, description, columnId}
+/**
+ * @function cardUpdateFunc - Updates the state of a card in our data store
+ * @param {Object} state - state of the card
+ * @param {string} state.id
+ * @param {string} state.title
+ * @param {string} state.description
+ * @param {string} state.columnId - id of the column that the card belongs to
+ * @param {boolean=} create - whether a card is being initialized
+ * @param {boolean=} del - whether a card is being deleted
+ */
+function cardUpdateFunc(state, create = false, del = false) {
     if (!state.id || !state.title || !state.description || !state.columnId) {
         throw new Error('Missing id, title, description, or columnId from update');
     } else {
@@ -48,29 +65,62 @@ function save() {
 
 }
 
+
+
+/**
+ * @function onSearch - Search for a string within all the cards' titles and descriptions
+ * @param {string} searchString - string to be searched for
+ */
+function cancelSearch() {
+    const columnsAll = Array.from(document.querySelectorAll('column-element'));
+    const cardsAll = columnsAll.reduce((arr, col) => {
+        return arr.concat(Array.from(col.getAllCards()))
+    }, []);
+    cardsAll.forEach(card => {
+        card.show();
+    })
+}
+
+function onSearch(searchString) {
+    if (searchString === '') {
+        cancelSearch();
+        return;
+    };
+    const columnsAll = Array.from(document.querySelectorAll('column-element'));
+    const cardsAll = columnsAll.reduce((arr, col) => {
+        return arr.concat(Array.from(col.getAllCards()))
+    }, []);
+    cardsAll.forEach(card => {
+        card.has(searchString, true) ? card.show() : card.hide();
+    });
+
+}
+
+
+
+
+
 function init() {
+
+    const columns = {};
+
     __data.columns.forEach(col => {
-        const column = new Column(col.id, col.title, __data);
-        __COLUMNS[col.id] = column;
+        const column = new Column(col.id, col.title, columnUpdateFunc, cardUpdateFunc);
+        columns[col.id] = column;
         MAIN.appendChild(column);
     });
 
     __data.cards.forEach(cd => {
-        const card = new Card(cd.id, cd.title, cd.description, __data);
-        __CARDS[cd.id] = card;
-        __COLUMNS[cd.columnId].add(card);
+        const card = new Card(cd.id, cd.title, cd.description, cardUpdateFunc);
+        columns[cd.columnId].add(card);
     });
 
-    MAIN.appendChild(new ProtoColumn());
+    MAIN.appendChild(new ProtoColumn(columnUpdateFunc));
 }
 
-function onSearch(searchString) {
-
-}
-
-window.onload = function() {
-    fetch('./materials/db.json')
-        .then(response => response.json())
-        .then(data => {__data = data; init()});
-    
-}
+fetch('./materials/db.json')
+    .then(response => response.json())
+    .then(data => {
+        Object.assign(__data, data);
+        init();
+    });

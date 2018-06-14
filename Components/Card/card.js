@@ -1,55 +1,114 @@
-function setStyle(element, styles) {
-    Object.assign(element.style, styles);
-};
+let cardId = 0;
 
-function setStyleAll(selector, styles) {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach(el => Object.assign(el.style, styles));
-};
+// This implies that we support only dragging 1 card at a time.
+let __draggedCard = null;
 
 class Card extends HTMLElement {
-    constructor(id, title, description, store) {
+    constructor(id, title, description, updateFunc) {
         super();
+        cardId++;
         const template = document.getElementById('card-template').content;
         const shadowRoot = this.attachShadow({mode: 'open'}).appendChild(template.cloneNode(true));
         
-        this.setAttribute('data-id', id);
-        this.setAttribute('draggable', true);
-
+        this.id = id;
         this.title = title;
         this.description = description;
-        this.store = store;
+        this.updateFunc = updateFunc;
 
-        this.setEditMode = this.setEditMode.bind(this);
-        this.exitEditMode = this.exitEditMode.bind(this);
         this.destroy = this.destroy.bind(this);
+        this.update = this.update.bind(this);
+        this.dragStart = this.dragStart.bind(this);
+        this.dragEnd = this.dragEnd.bind(this);
+        this.dragOver = this.dragOver.bind(this);
+        this.dragEnter = this.dragEnter.bind(this);
+        this.dragLeave = this.dragLeave.bind(this);
+        this.drop = this.drop.bind(this);
+        
+    }
     
+    update() {
+        this.updateFunc({
+            id: this.id,
+            title: this.cardTitle.textContent,
+            description: this.cardDescription.textContent,
+            columnId: this.getRootNode().host.id
+        })
     }
 
-    toggleHeight(){
+    toggleHeight(e){
         this.classList.toggle('expanded');
-    }
-    setEditMode(){
-        this.btnEdit.style.display = 'none';
-        this.btnSubmit.style.display = 'block';
-        this.btnCancel.style.display = 'block';
-    }
-
-    exitEditMode(){
-        this.btnEdit.style.display = 'block';
-        this.btnSubmit.style.display = 'none';
-        this.btnCancel.style.display = 'none';
-    }
-    setTitle(title) {
-        this.cardTitle.textContent = title;
-        let cardStoreData = this.store.cards.find(obj => obj.id === this.dataset.id);
-        cardStoreData.title = title;
+        if (this.classList.contains('expanded')) {
+            e.target.innerHTML = '&#x21E7;';
+        } else {
+            e.target.innerHTML = '&#x21E9;';
+        }
     }
 
-    setDescription(description) {
-        this.cardDescription.textContent = description;
-        let cardStoreData = this.store.cards.find(obj => obj.id === this.id);
-        cardStoreData.description = description;
+    toggleDraggable(e){
+        const card = this.getRootNode().querySelector('.card');
+        if (card.getAttribute('draggable') == 'true') {
+            card.setAttribute('draggable', "false");
+        } else {
+            card.setAttribute('draggable', "true");
+        }
+    };
+    // Returns true if either the title or description contains the given text
+    has(text, ignoreCase = false) {
+        const title = ignoreCase ? this.cardTitle.textContent.toLowerCase() : this.cardTitle.textContent;
+        const content = ignoreCase ? this.cardDescription.textContent.toLowerCase() : this.cardDescription.textContent;
+        const searchString = ignoreCase ? text.toLowerCase() : text;
+        return (title.includes(searchString) || content.includes(searchString));
+    }
+
+    hide() {
+        this.shadowRoot.querySelector('.card').classList.add('hidden');
+    }
+
+    show() {
+        this.shadowRoot.querySelector('.card').classList.remove('hidden');
+    }
+
+    dragStart(e) {
+        __draggedCard = e.target.getRootNode().host;
+        e.dataTransfer.setData('text/plain', this.id);
+    }
+
+    dragEnd(e) {
+        __draggedCard = null;
+    }
+
+    dragOver(e) {
+        const targetId = e.target.getRootNode().host.getRootNode().host.id || e.target.getRootNode().host.id;
+        const hostId = __draggedCard.id;
+        if (targetId != hostId) {
+            e.preventDefault();
+        };
+    }
+
+    dragEnter(e) {
+        const targetId = e.target.getRootNode().host.getRootNode().host.id || e.target.getRootNode().host.id;
+        const hostId = __draggedCard.id;
+        if (targetId != hostId) {
+            e.preventDefault();
+        };
+    }
+
+    dragLeave(e) {
+        
+    }
+
+    drop(e) {
+        const column = e.target.getRootNode().host.getRootNode().host || e.target.getRootNode().host;
+        column.add(__draggedCard);
+        __draggedCard = null;
+    }
+
+    getDescription() {
+        return this.cardDescription.textContent;
+    }
+
+    getId() {
+        return this.id;
     }
 
     destroy() {
@@ -61,42 +120,60 @@ class Card extends HTMLElement {
             this.cardTitle.setAttribute('slot', 'card-title');
             this.cardTitle.setAttribute('contenteditable', 'true');
             this.cardTitle.textContent = this.title;
+            this.cardTitle.addEventListener('input', this.update);
             this.appendChild(this.cardTitle);
     
             this.cardDescription = document.createElement('div');
             this.cardDescription.setAttribute('slot', 'card-description');
             this.cardDescription.setAttribute('contenteditable', 'true');
             this.cardDescription.textContent = this.description;
+            this.cardDescription.addEventListener('input', this.update);
             this.appendChild(this.cardDescription);
-    
-            this.btnEdit = this.shadowRoot.querySelector('.btn-edit');
-            this.btnSubmit = this.shadowRoot.querySelector('.btn-submit');
-            this.btnCancel = this.shadowRoot.querySelector('.btn-cancel');
 
-            // this.shadowRoot.querySelector('.card-content').addEventListener('click', this.toggleHeight);
+            this.btnDrag = this.shadowRoot.querySelector('.card-drag-icon');
+            this.btnExpand = this.shadowRoot.querySelector('.card-expand-icon');
+            this.btnDelete = this.shadowRoot.querySelector('.card-delete-icon');
+
+            const card = this.shadowRoot.querySelector('.card');
+            const cardContent = this.shadowRoot.querySelector('.card-content');
+            this.toggleHeight = this.toggleHeight.bind(cardContent);
+            this.btnDrag.addEventListener('mouseenter', this.toggleDraggable);
+            this.btnDrag.addEventListener('mouseleave', this.toggleDraggable);
+            this.btnExpand.addEventListener('click', this.toggleHeight);
+            this.btnDelete.addEventListener('click', this.destroy);
+            this.toggleDraggable = this.toggleDraggable.bind(this);
+
+            card.addEventListener('dragstart', this.dragStart);
+            card.addEventListener('dragend', this.dragEnd);
+            card.addEventListener('dragover', this.dragOver);
+            card.addEventListener('dragenter', this.dragEnter);
+            card.addEventListener('dragleave', this.dragLeave);
+            card.addEventListener('drop', this.drop);
         }
     }
 
     disconnectedCallback() {
-
+        // Must remove all the event listeners here.
     }
 
     attributeChangedCallback() {
-        console.log('attr changed');
+        // To be called in case of any changes in attributes in future.
     }
 }
 
 class ProtoCard extends HTMLElement {
-    constructor(container) {
+    constructor(container, updateFunc) {
         super();
-        this.container = container;
+        
         const template = document.getElementById('proto-card-template').content;
-        const shadowRoot = this.attachShadow({mode: 'open'}).appendChild(template.cloneNode(true));
+        this.attachShadow({mode: 'open'}).appendChild(template.cloneNode(true));
+
+        this.container = container;
 
         this.edit = this.edit.bind(this);
         this.cancel = this.cancel.bind(this);
         this.makeNewCard = this.makeNewCard.bind(this);
-
+        this.updateFunc = updateFunc;
         
     }
 
@@ -117,10 +194,11 @@ class ProtoCard extends HTMLElement {
         this.placeholder.style.display = 'none';
         this.input.style.display = 'block';
         this.btnGroup.style.display = 'block';
+        this.input.focus();
     }
 
     makeNewCard(){
-        this.container.add(new Card(0, 'New card', this.input.value, null));
+        this.container.add(new Card(++cardId, `Card ${cardId}`, this.input.value, this.updateFunc));
         this.input.value = '';
         this.cancel();
     }

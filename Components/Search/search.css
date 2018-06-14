@@ -1,0 +1,21 @@
+.search-form {
+    user-select: contain;
+    pointer-events: all;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    display: block;
+    background-color: black;
+    width: 20em;
+    height: 2.5em;
+}
+
+.btn-search {
+    display: inline-block;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    top: 0.2em;
+    margin-left: 0.5em;
+}

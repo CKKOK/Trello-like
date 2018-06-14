@@ -17,10 +17,11 @@
     width: 4em;
     height: 1.5em;
     line-height: 1.5em;
+    font-size: 0.8em;
     border-radius: 4px;
     color: white;
     text-align: center;
-    box-shadow: 1px 1px 2px gray;
+    box-shadow: 1px 1px 1px gray;
     cursor: pointer;
     margin: 6px 1em;
 }
@@ -31,6 +32,26 @@
 
 .proto-card-btn-cancel {
     background-color: gray;
+}
+
+.proto-card-btn-submit:hover, .proto-card-btn-cancel:hover {
+    box-shadow: none;
+}
+
+.proto-card-btn-submit:hover {
+    background-color: lightgreen;
+}
+
+.proto-card-btn-cancel:hover {
+    background-color: lightgray;
+}
+
+.proto-card-btn-submit:active {
+    background-color: darkgreen;
+}
+
+.proto-card-btn-cancel:active {
+    background-color: slategray;
 }
 
 .proto-card-placeholder {

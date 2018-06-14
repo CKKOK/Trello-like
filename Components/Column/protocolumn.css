@@ -27,10 +27,11 @@
     width: 6em;
     height: 1.5em;
     line-height: 1.5em;
+    font-size: 0.8em;
     border-radius: 4px;
     color: white;
     text-align: center;
-    box-shadow: 1px 1px 2px gray;
+    box-shadow: 1px 1px 1px gray;
     cursor: pointer;
     display: none;
     margin: 6px 2em;
@@ -42,6 +43,26 @@
 
 .proto-column-btn-cancel {
     background-color: gray;
+}
+
+.proto-column-btn-submit:hover, .proto-column-btn-cancel:hover {
+    box-shadow: none;
+}
+
+.proto-column-btn-submit:hover {
+    background-color: lightgreen;
+}
+
+.proto-column-btn-cancel:hover {
+    background-color: lightgray;
+}
+
+.proto-column-btn-submit:active {
+    background-color: darkgreen;
+}
+
+.proto-column-btn-cancel:active {
+    background-color: slategray;
 }
 
 .proto-column-placeholder {

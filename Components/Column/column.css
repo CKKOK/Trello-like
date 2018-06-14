@@ -17,9 +17,31 @@
     border-radius: 4px;
 }
 
+.column:-moz-drag-over {
+    border: 6px solid red;
+}
+
+.column-header {
+    display: flex;
+}
+
 .column-title {
     font-weight: bold;
     cursor: pointer;
+    flex: 4;
+}
+
+.column-delete-icon {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    text-align: left;
+    color: lightgray;
+    cursor: pointer;
+}
+
+.column-delete-icon:hover {
+    color: gray;
 }
 
 /* Tablet layout */
