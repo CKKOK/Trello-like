@@ -4,23 +4,17 @@
  * @constant {DOMElement} MAIN - main section of the page
  * @constant {DOMElement} HEADER - header section, where the title and the search bar lives
  * @constant {DOMElement} BTN_EXPORT - export data button, downloads the data in .json format when clicked
+ * @constant {string} DATA_SOURCE - location of cards/columns data to initialize the view with
  * @constant {Object} __data - single data store containing the state of the columns and cards 
  */
 const MAIN = document.querySelector('main');
 const HEADER = document.querySelector('header');
 const BTN_EXPORT = document.querySelector('.btn-export');
-const __data = {};
-// const __COLUMNS = {};
-// const __CARDS = {};
-
-// Modify card ::DONE
-// Delete card::DONE
-// Add column::DONE
-// Modify column::DONE
-// Delete column::DONE
-// Search for cards
-// Drag and drop card from one column to another
-// Click on a card to expand it::DONE
+const DATA_SOURCE = './materials/db.json';
+const __data = {
+    columns: [],
+    cards: []
+};
 
 HEADER.appendChild(new Search(onSearch));
 BTN_EXPORT.addEventListener('click', save);
@@ -37,8 +31,20 @@ function columnUpdateFunc(state, create = false, del = false) {
     if (!state.id || !state.title) {
         throw new Error('Missing id or title from update');
     } else {
-        let col = __data.columns.find(obj => obj.id === parseInt(state.id));
-        col.title = state.title;
+        if (!create && !del) {
+            let col = __data.columns.find(obj => parseInt(obj.id) === parseInt(state.id));
+            col.title = state.title;
+        } else if (create === true) {
+            __data.columns.push(state);
+        } else if (del === true) {
+            let length = __data.columns.length;
+            for (let i = 0; i < length; i++) {
+                if (__data.columns[i].id == parseInt(state.id)) {
+                    __data.columns.splice(i, 1);
+                    break;
+                };
+            };
+        }
     };
 };
 
@@ -56,12 +62,25 @@ function cardUpdateFunc(state, create = false, del = false) {
     if (!state.id || !state.title || !state.description || !state.columnId) {
         throw new Error('Missing id, title, description, or columnId from update');
     } else {
-        let card = __data.cards.find(obj => obj.id === parseInt(state.id));
-        card.title = state.title;
-        card.description = state.description;
-        card.columnId = state.columnId;
+        if (create == false && del == false) {
+            let card = __data.cards.find(obj => obj.id === state.id);
+            card.title = state.title;
+            card.description = state.description;
+            card.columnId = state.columnId;
+        } else if (create === true) {
+            __data.cards.push(state);
+        } else if (del === true) {
+            let length = __data.cards.length;
+            for (let i = 0; i < length; i++) {
+                console.log(__data.cards[i].id, state.id);
+                if (__data.cards[i].id == parseInt(state.id)) {
+                    __data.cards.splice(i, 1);
+                    break;
+                };
+            };
+        };
     };
-}
+};
 
 function save() {
     var blobObj = new Blob([JSON.stringify(__data, null, 4)]);
@@ -80,12 +99,13 @@ function save() {
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
         }, 0);
-    }
-}
+    };
+};
 
 
 /**
  * @function onSearch - Search for a string within all the cards' titles and descriptions
+ * @function cancelSearch - returns all cards in all columns to their shown state, called when the search input is empty
  * @param {string} searchString - string to be searched for
  */
 function cancelSearch() {
@@ -95,8 +115,8 @@ function cancelSearch() {
     }, []);
     cardsAll.forEach(card => {
         card.show();
-    })
-}
+    });
+};
 
 function onSearch(searchString) {
     if (searchString === '') {
@@ -111,30 +131,35 @@ function onSearch(searchString) {
         card.has(searchString, true) ? card.show() : card.hide();
     });
 
-}
+};
 
-function init() {
+/**
+ * @function init - Reads the data and creates the columns and cards stored in it
+ * @param {Object} data - initial data on cards and columns
+ */
+function init(data) {
 
     const columns = {};
 
-    __data.columns.forEach(col => {
+    data.columns.forEach(col => {
         const column = new Column(col.id, col.title, columnUpdateFunc, cardUpdateFunc);
         columns[col.id] = column;
         MAIN.appendChild(column);
     });
 
-    __data.cards.forEach(cd => {
+    data.cards.forEach(cd => {
         const card = new Card(cd.id, cd.title, cd.description, cardUpdateFunc);
-        columns[cd.columnId].add(card);
+        columns[cd.columnId].add(card, true);
     });
 
-    MAIN.appendChild(new ProtoColumn(columnUpdateFunc));
-}
+    MAIN.appendChild(new ProtoColumn(columnUpdateFunc, cardUpdateFunc));
+};
 
 
-fetch('./materials/db.json')
+// AJAX call to fetch the boilerplate database, then clone its contents into the __data object, then calls the init function. When connecting to a backend database, amend the DATA_SOURCE constant itself.
+fetch(DATA_SOURCE)
     .then(response => response.json())
     .then(data => {
-        Object.assign(__data, data);
-        init();
+        // Object.assign(__data, data);
+        init(data);
     });

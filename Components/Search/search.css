@@ -2,11 +2,11 @@
     user-select: contain;
     pointer-events: all;
     position: absolute;
-    right: 0px;
-    top: 0px;
+    right: 0;
+    top: 0;
     display: block;
     background-color: black;
-    width: 20em;
+    width: auto;
     height: 2.5em;
     text-align: right;
     padding-right: 2em;
@@ -20,4 +20,19 @@
     position: relative;
     top: 0.2em;
     margin-left: 0.5em;
+}
+
+/* Tablet layout */
+@media only screen and (min-width: 768px) {
+    
+}
+
+/* Laptops: small (e.g. up to 13 inch) */
+@media only screen and (min-width: 992px) {
+    
+}
+
+/* Laptops and Desktops */
+@media only screen and (min-width: 1200px) {
+    
 }

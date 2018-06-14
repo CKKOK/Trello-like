@@ -1,5 +1,10 @@
-let columnIds = 0;
+let columnIds = 1;
 
+/**
+ * Creates a new column using the column-template on html page.
+ * @class
+ * @classdesc A Column with a title that contains Cards. Depends on the Card class. Emits data through the update method. The cardUpdateFunc method is passed through to new cards and isn't to be used elsewhere in the class to keep some semblance of purity.
+ */
 class Column extends HTMLElement {
     constructor(id, title, updateFunc, cardUpdateFunc) {
         super();
@@ -22,11 +27,11 @@ class Column extends HTMLElement {
         return result;
     }
 
-    update() {
+    update(event = null, create = false, del = false) {
         this.updateFunc({
             id: this.id,
             title: this.colTitle.textContent
-        })
+        }, create, del);
     }
     connectedCallback() {
         this.colTitle = document.createElement('div');
@@ -40,6 +45,9 @@ class Column extends HTMLElement {
 
         this.btnDelete = this.shadowRoot.querySelector('.column-delete-icon');
         this.btnDelete.addEventListener('click', this.destroy);
+
+        // Update the data store with a create event
+        this.update(null, true, false);
     }
 
     disconnectedCallback() {
@@ -51,12 +59,14 @@ class Column extends HTMLElement {
         // To be called in future if any attribute changes, e.g. id
     }
 
-    add(card) {
+    add(card, alreadyInit = false) {
         // Append the new card before the new card form
         // Update the new card's columnId field
         const columnCardList = this.shadowRoot.querySelector('.column-card-list');
         columnCardList.insertBefore(card, columnCardList.children[columnCardList.children.length - 1]);
-        card.update();
+        if (alreadyInit === false) {
+            card.update();
+        }
     }
 
     destroy() {
@@ -64,12 +74,15 @@ class Column extends HTMLElement {
         // Then remove all event listeners on the column
         let cards = this.getAllCards();
         cards.forEach(card => card.destroy());
+        this.colTitle.removeEventListener('input', this.update);
+        this.btnDelete.removeEventListener('click', this.destroy);
+        this.update(null, false, true);
         this.parentNode.removeChild(this);
     }
 }
 
 class ProtoColumn extends HTMLElement {
-    constructor(updateFunc) {
+    constructor(columnUpdateFunc, cardUpdateFunc) {
         super();
         const template = document.getElementById('proto-column-template').content;
         const shadowRoot = this.attachShadow({mode: 'open'});
@@ -78,7 +91,8 @@ class ProtoColumn extends HTMLElement {
         this.edit = this.edit.bind(this);
         this.cancel = this.cancel.bind(this);
         this.makeNewColumn = this.makeNewColumn.bind(this);
-        this.updateFunc = updateFunc;
+        this.columnUpdateFunc = columnUpdateFunc;
+        this.cardUpdateFunc = cardUpdateFunc;
     }
 
     connectedCallback() {
@@ -110,7 +124,7 @@ class ProtoColumn extends HTMLElement {
     makeNewColumn(e) {
         e.preventDefault();
         const title = this.input.value;
-        MAIN.insertBefore(new Column(__data.columns.length, title, this.updateFunc), this);
+        MAIN.insertBefore(new Column(columnIds, title, this.columnUpdateFunc, this.cardUpdateFunc), this);
         this.cancel();
     }
 }

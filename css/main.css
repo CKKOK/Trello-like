@@ -61,15 +61,22 @@ main {
     position: fixed;
     bottom: 0.75em;
     right: 0.75em;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
     background-color: white;
     color: black;
     box-shadow: 1px 1px 1px lightgray;
     cursor: pointer;
+    font-size: 24px;
     text-align: center;
-    line-height: 32px;
+    line-height: 36px;
+}
+
+.btn-export:hover {
+    background-color: gold;
+    box-shadow: 2px 2px 3px gray;
+    transform: translate(-2px, -2px);
 }
 
 /* Tablet layout */

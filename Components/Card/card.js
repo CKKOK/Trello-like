@@ -1,8 +1,13 @@
-let cardId = 0;
+let cardId = 1;
 
-// This implies that we support only dragging 1 card at a time.
+// For keeping track of the element currently being dragged. This also implies that we only support a single drag element now. This should be an array for multi-touch drag events.
 let __draggedCard = null;
 
+/**
+ * Creates a new column using the column-template on html page.
+ * @class 
+ * @classdesc A Card that contains a title and description. Draggable using a handle. Collapsed by default, but expandable using a handle. Also deletable. Emits data through the update method.
+ */
 class Card extends HTMLElement {
     constructor(id, title, description, updateFunc) {
         super();
@@ -26,13 +31,13 @@ class Card extends HTMLElement {
         
     }
     
-    update() {
+    update(event = null, create = false, del = false) {
         this.updateFunc({
             id: this.id,
             title: this.cardTitle.textContent,
             description: this.cardDescription.textContent,
             columnId: this.getRootNode().host.id
-        })
+        }, create, del);
     }
 
     toggleHeight(e){
@@ -78,7 +83,7 @@ class Card extends HTMLElement {
     }
 
     dragOver(e) {
-        const targetId = e.target.getRootNode().host.getRootNode().host.id || e.target.getRootNode().host.id;
+        const targetId = e.target.getRootNode().host.id;
         const hostId = __draggedCard.id;
         if (targetId != hostId) {
             e.preventDefault();
@@ -86,7 +91,7 @@ class Card extends HTMLElement {
     }
 
     dragEnter(e) {
-        const targetId = e.target.getRootNode().host.getRootNode().host.id || e.target.getRootNode().host.id;
+        const targetId = e.target.getRootNode().host.id;
         const hostId = __draggedCard.id;
         if (targetId != hostId) {
             e.preventDefault();
@@ -94,10 +99,11 @@ class Card extends HTMLElement {
     }
 
     dragLeave(e) {
-        
+        // No styling required in this implementation yet, for future work in changing the style of a card when it leaves a droppable zone
     }
 
     drop(e) {
+        // In case the user drops the card on a card, get the column that the card is in.
         const column = e.target.getRootNode().host.getRootNode().host || e.target.getRootNode().host;
         column.add(__draggedCard);
         __draggedCard = null;
@@ -112,6 +118,21 @@ class Card extends HTMLElement {
     }
 
     destroy() {
+        this.cardTitle.removeEventListener('input', this.update);
+        this.cardDescription.removeEventListener('input', this.update);
+        this.btnDrag.removeEventListener('mouseenter', this.toggleDraggable);
+        this.btnDrag.removeEventListener('mouseleave', this.toggleDraggable);
+        this.btnExpand.removeEventListener('click', this.toggleHeight);
+        this.btnDelete.removeEventListener('click', this.destroy);
+
+        const card = this.shadowRoot.querySelector('.card');
+        card.removeEventListener('dragstart', this.dragStart);
+        card.removeEventListener('dragend', this.dragEnd);
+        card.removeEventListener('dragover', this.dragOver);
+        card.removeEventListener('dragenter', this.dragEnter);
+        card.removeEventListener('dragleave', this.dragLeave);
+        card.removeEventListener('drop', this.drop);
+        this.update(null, false, true);
         this.parentNode.removeChild(this);
     }
     connectedCallback() {
@@ -149,11 +170,14 @@ class Card extends HTMLElement {
             card.addEventListener('dragenter', this.dragEnter);
             card.addEventListener('dragleave', this.dragLeave);
             card.addEventListener('drop', this.drop);
+
+            // Update the data store with a create event
+            this.update(null, true, false);
         }
     }
 
     disconnectedCallback() {
-        // Must remove all the event listeners here.
+        // Actions to be done
     }
 
     attributeChangedCallback() {
@@ -198,7 +222,7 @@ class ProtoCard extends HTMLElement {
     }
 
     makeNewCard(){
-        this.container.add(new Card(++cardId, `Card ${cardId}`, this.input.value, this.updateFunc));
+        this.container.add(new Card(cardId, `Card ${cardId}`, this.input.value, this.updateFunc), false);
         this.input.value = '';
         this.cancel();
     }
