@@ -14,11 +14,12 @@ header {
     height: 2.5em;
     width: 100%;
     line-height: 2.5em;
-    text-align: center;
+    text-align: left;
     color: white;
     background-color: black;
     z-index: 1;
     box-shadow: 2px 2px 4px black;
+    padding-left: 1em;
     user-select: none;
     pointer-events: none;
 }
@@ -41,18 +42,34 @@ header {
     right: 0;
     height: 100%;
     width: 100%;
-    /* background-image: url('https://picsum.photos/1920/1080/?random'); */
+    background-image: url('https://picsum.photos/1920/1080/?random');
     background-size: cover;
     background-position: center;
     filter: blur(3px);
     z-index: -1;
 }
+
 main {
     margin-top: 2.5em;
     padding: 1em;
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     grid-column-gap: 2em;
+}
+
+.btn-export {
+    position: fixed;
+    bottom: 0.75em;
+    right: 0.75em;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: white;
+    color: black;
+    box-shadow: 1px 1px 1px lightgray;
+    cursor: pointer;
+    text-align: center;
+    line-height: 32px;
 }
 
 /* Tablet layout */
@@ -64,6 +81,10 @@ main {
 
 /* Laptops: small (e.g. up to 13 inch) */
 @media only screen and (min-width: 992px) {
+    header {
+        text-align: center;
+    }
+
     main {
         grid-template-columns: repeat(3, 1fr);
     }

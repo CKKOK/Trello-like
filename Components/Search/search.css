@@ -8,6 +8,8 @@
     background-color: black;
     width: 20em;
     height: 2.5em;
+    text-align: right;
+    padding-right: 2em;
 }
 
 .btn-search {

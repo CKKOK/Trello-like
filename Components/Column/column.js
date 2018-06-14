@@ -43,11 +43,12 @@ class Column extends HTMLElement {
     }
 
     disconnectedCallback() {
-
+        this.btnDelete.removeEventListener('click', this.destroy);
+        console.log(`Column ${this.id} disconnected`);
     }
 
     attributeChangedCallback() {
-
+        // To be called in future if any attribute changes, e.g. id
     }
 
     add(card) {
@@ -55,6 +56,7 @@ class Column extends HTMLElement {
         // Update the new card's columnId field
         const columnCardList = this.shadowRoot.querySelector('.column-card-list');
         columnCardList.insertBefore(card, columnCardList.children[columnCardList.children.length - 1]);
+        card.update();
     }
 
     destroy() {

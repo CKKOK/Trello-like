@@ -3,10 +3,12 @@
 /**
  * @constant {DOMElement} MAIN - main section of the page
  * @constant {DOMElement} HEADER - header section, where the title and the search bar lives
+ * @constant {DOMElement} BTN_EXPORT - export data button, downloads the data in .json format when clicked
  * @constant {Object} __data - single data store containing the state of the columns and cards 
  */
 const MAIN = document.querySelector('main');
 const HEADER = document.querySelector('header');
+const BTN_EXPORT = document.querySelector('.btn-export');
 const __data = {};
 // const __COLUMNS = {};
 // const __CARDS = {};
@@ -21,7 +23,7 @@ const __data = {};
 // Click on a card to expand it::DONE
 
 HEADER.appendChild(new Search(onSearch));
-
+BTN_EXPORT.addEventListener('click', save);
 
 /**
  * @function columnUpdateFunc - Updates the state of a column in our data store
@@ -62,9 +64,24 @@ function cardUpdateFunc(state, create = false, del = false) {
 }
 
 function save() {
-
+    var blobObj = new Blob([JSON.stringify(__data, null, 4)]);
+    var filename = 'CardsData';
+    // IE support...
+    if (window.navigator.msSaveBlob) {
+        window.navigator.msSaveBlob(blobObj, filename + '.json');
+    } else {
+        var a = document.createElement('a');
+        var url = URL.createObjectURL(blobObj);
+        a.href = url;
+        a.download = filename + '.json';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function() {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }, 0);
+    }
 }
-
 
 
 /**
@@ -96,10 +113,6 @@ function onSearch(searchString) {
 
 }
 
-
-
-
-
 function init() {
 
     const columns = {};
@@ -117,6 +130,7 @@ function init() {
 
     MAIN.appendChild(new ProtoColumn(columnUpdateFunc));
 }
+
 
 fetch('./materials/db.json')
     .then(response => response.json())
