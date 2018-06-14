@@ -29,5 +29,6 @@ A quick view of this application can be seen at [http://ckkok.github.io/Trello-l
 - Unit tests were specified (using Jasmine) but not written.
 - Firefox users may experience font size issues, but enabling experimental mode should resolve that as it will enable Web Components support.
 
-## For further work
+## For further work (Check latest branch)
 - Complete unit tests
+- Translate the json file updates to put requests
