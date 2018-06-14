@@ -31,5 +31,6 @@ A quick view of this application can be seen at [http://ckkok.github.io/Trello-l
 
 ## For further work (Check latest branch)
 - Complete unit tests
+- Migrate templates into individual component files for ease of reusability
 - Implement touch support
 - Map front-end data update requests to server calls
