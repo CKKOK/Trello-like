@@ -1,4 +1,5 @@
-
+// Detect whether we are in testing mode
+const ENV_TEST = typeof(jasmine) === 'undefined' ? false : true;
 
 /**
  * @constant {DOMElement} MAIN - main section of the page
@@ -15,9 +16,6 @@ const __data = {
     columns: [],
     cards: []
 };
-
-HEADER.appendChild(new Search(onSearch));
-BTN_EXPORT.addEventListener('click', save);
 
 /**
  * @function columnUpdateFunc - Updates the state of a column in our data store
@@ -155,11 +153,17 @@ function init(data) {
     MAIN.appendChild(new ProtoColumn(columnUpdateFunc, cardUpdateFunc));
 };
 
+if (!ENV_TEST) {
 
-// AJAX call to fetch the boilerplate database, then clone its contents into the __data object, then calls the init function. When connecting to a backend database, amend the DATA_SOURCE constant itself.
-fetch(DATA_SOURCE)
-    .then(response => response.json())
-    .then(data => {
-        // Object.assign(__data, data);
-        init(data);
-    });
+    HEADER.appendChild(new Search(onSearch));
+    BTN_EXPORT.addEventListener('click', save);
+
+    // AJAX call to fetch the boilerplate database, then clone its contents into the __data object, then calls the init function. When connecting to a backend database, amend the DATA_SOURCE constant itself.
+    fetch(DATA_SOURCE)
+        .then(response => response.json())
+        .then(data => {
+            // Object.assign(__data, data);
+            init(data);
+        });
+
+}
