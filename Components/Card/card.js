@@ -106,6 +106,7 @@ class Card extends HTMLElement {
 
     drop(e) {
         // In case the user drops the card on a card, get the column that the card is in.
+        e.preventDefault();
         if (!__dragEnded) {
             const column = e.target.getRootNode().host.getRootNode().host || e.target.getRootNode().host;
             column.add(__draggedCard);

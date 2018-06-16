@@ -77,6 +77,7 @@ class Column extends HTMLElement {
         } else if (tagName === 'DIV') {
             column = e.target.parentNode;
         };
+        column.shadowRoot.querySelector('.column').classList.toggle('column-dragged-over');
     }
 
     dragOver(e) {
@@ -91,18 +92,21 @@ class Column extends HTMLElement {
         } else if (tagName === 'DIV') {
             column = e.target.parentNode;
         };
+        column.shadowRoot.querySelector('.column').classList.toggle('column-dragged-over');
     }
 
     drop(e) {
+        e.preventDefault();
+        let column = null, tagName = e.target.tagName;
+        if (tagName === 'COLUMN-ELEMENT') {
+            column = e.target;
+        } else if (tagName === 'DIV') {
+            column = e.target.parentNode;
+        };
         if (!__dragEnded) {
-            let column = null, tagName = e.target.tagName;
-            if (tagName === 'COLUMN-ELEMENT') {
-                column = e.target;
-            } else if (tagName === 'DIV') {
-                column = e.target.parentNode;
-            }
             column.add(__draggedCard);
-        }
+        };
+        column.shadowRoot.querySelector('.column').classList.toggle('column-dragged-over');
     }
 
     add(card, alreadyInit = false) {

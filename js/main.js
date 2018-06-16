@@ -70,7 +70,6 @@ function cardUpdateFunc(state, create = false, del = false) {
         } else if (del === true) {
             let length = __data.cards.length;
             for (let i = 0; i < length; i++) {
-                console.log(__data.cards[i].id, state.id);
                 if (__data.cards[i].id == parseInt(state.id)) {
                     __data.cards.splice(i, 1);
                     break;
@@ -168,5 +167,4 @@ if (!ENV_TEST) {
 
     // AJAX call to fetch the boilerplate database, then clone its contents into the __data object, then calls the init function. When connecting to a backend database, amend the DATA_SOURCE constant itself.
     getData();
-    console.log('done');
 }

@@ -17,6 +17,12 @@
     border-radius: 4px;
 }
 
+.column-dragged-over {
+    border: 3px solid rgb(71, 71, 71);
+    box-shadow: 2px 2px 3px darkgray;
+    transform: translate(-3px, -3px);
+}
+
 .column-header {
     display: flex;
 }
