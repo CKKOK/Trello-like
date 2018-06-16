@@ -18,6 +18,11 @@ class Column extends HTMLElement {
         this.updateFunc = updateFunc;
         this.cardUpdateFunc = cardUpdateFunc;
 
+        this.dragEnter = this.dragEnter.bind(this);
+        this.dragOver = this.dragOver.bind(this);
+        this.dragLeave = this.dragLeave.bind(this);
+        this.drop = this.drop.bind(this);
+
         this.destroy = this.destroy.bind(this);
         this.update = this.update.bind(this);
     }
@@ -46,6 +51,11 @@ class Column extends HTMLElement {
         this.btnDelete = this.shadowRoot.querySelector('.column-delete-icon');
         this.btnDelete.addEventListener('click', this.destroy);
 
+        this.addEventListener('dragenter', this.dragEnter);
+        this.addEventListener('dragover', this.dragOver);
+        this.addEventListener('dragleave', this.dragLeave);
+        this.addEventListener('drop', this.drop);
+
         // Update the data store with a create event
         this.update(null, true, false);
     }
@@ -57,6 +67,42 @@ class Column extends HTMLElement {
 
     attributeChangedCallback() {
         // To be called in future if any attribute changes, e.g. id
+    }
+
+    dragEnter(e) {
+        e.preventDefault();
+        let column = null, tagName = e.target.tagName;
+        if (tagName === 'COLUMN-ELEMENT') {
+            column = e.target;
+        } else if (tagName === 'DIV') {
+            column = e.target.parentNode;
+        };
+    }
+
+    dragOver(e) {
+        
+    }
+
+    dragLeave(e) {
+        e.preventDefault();
+        let column = null, tagName = e.target.tagName;
+        if (tagName === 'COLUMN-ELEMENT') {
+            column = e.target;
+        } else if (tagName === 'DIV') {
+            column = e.target.parentNode;
+        };
+    }
+
+    drop(e) {
+        if (!__dragEnded) {
+            let column = null, tagName = e.target.tagName;
+            if (tagName === 'COLUMN-ELEMENT') {
+                column = e.target;
+            } else if (tagName === 'DIV') {
+                column = e.target.parentNode;
+            }
+            column.add(__draggedCard);
+        }
     }
 
     add(card, alreadyInit = false) {

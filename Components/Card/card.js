@@ -2,6 +2,7 @@ let cardId = 1;
 
 // For keeping track of the element currently being dragged. This also implies that we only support a single drag element now. This should be an array for multi-touch drag events.
 let __draggedCard = null;
+let __dragEnded = true;
 
 /**
  * Creates a new column using the column-template on html page.
@@ -24,10 +25,10 @@ class Card extends HTMLElement {
         this.update = this.update.bind(this);
         this.dragStart = this.dragStart.bind(this);
         this.dragEnd = this.dragEnd.bind(this);
-        this.dragOver = this.dragOver.bind(this);
-        this.dragEnter = this.dragEnter.bind(this);
-        this.dragLeave = this.dragLeave.bind(this);
-        this.drop = this.drop.bind(this);
+        // this.dragOver = this.dragOver.bind(this);
+        // this.dragEnter = this.dragEnter.bind(this);
+        // this.dragLeave = this.dragLeave.bind(this);
+        // this.drop = this.drop.bind(this);
         
     }
     
@@ -75,6 +76,7 @@ class Card extends HTMLElement {
 
     dragStart(e) {
         __draggedCard = e.target.getRootNode().host;
+        __dragEnded = false;
         e.dataTransfer.setData('text/plain', this.id);
     }
 
@@ -104,9 +106,11 @@ class Card extends HTMLElement {
 
     drop(e) {
         // In case the user drops the card on a card, get the column that the card is in.
-        const column = e.target.getRootNode().host.getRootNode().host || e.target.getRootNode().host;
-        column.add(__draggedCard);
-        __draggedCard = null;
+        if (!__dragEnded) {
+            const column = e.target.getRootNode().host.getRootNode().host || e.target.getRootNode().host;
+            column.add(__draggedCard);
+            __dragEnded = true;
+        };
     }
 
     getDescription() {

@@ -153,17 +153,20 @@ function init(data) {
     MAIN.appendChild(new ProtoColumn(columnUpdateFunc, cardUpdateFunc));
 };
 
+function getData() {
+    fetch(DATA_SOURCE)
+    .then(response => response.json())
+    .then(data => {
+        init(data);
+    });
+}
+
 if (!ENV_TEST) {
 
     HEADER.appendChild(new Search(onSearch));
     BTN_EXPORT.addEventListener('click', save);
 
     // AJAX call to fetch the boilerplate database, then clone its contents into the __data object, then calls the init function. When connecting to a backend database, amend the DATA_SOURCE constant itself.
-    fetch(DATA_SOURCE)
-        .then(response => response.json())
-        .then(data => {
-            // Object.assign(__data, data);
-            init(data);
-        });
-
+    getData();
+    console.log('done');
 }

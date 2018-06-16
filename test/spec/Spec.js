@@ -1,6 +1,8 @@
 describe("Main script", function() {
   
   it("should fetch card and column data", function() {
+    getData();
+    
   });
 
   it("should map the card and column data into their respective class instances", function() {
